@@ -1,45 +1,25 @@
-Traffic Sign Classification Project
+Traffic Sign Classification and Detection Project
 
-This project is a Convolutional Neural Network (CNN) classifier designed to identify various traffic signs with high accuracy. The model was developed using the German Traffic Sign Recognition Benchmark (GTSRB), a comprehensive dataset featuring images from real-world road conditions in Germany.
+This project combines object detection and image classification into a hybrid system for traffic sign recognition. It was developed to use the strengths of two approaches: YOLOv11 for real-time traffic sign detection and localization, and a Custom CNN Classifier trained on the GTSRB dataset for classification of cropped traffic sign images. Together, this hybrid system can both detect traffic signs in an image and classify them into their correct categories.
 
-Project Goal
+The goal of this project is to build a reliable pipeline for traffic sign recognition that can be used in autonomous driving or driver assistance technologies. YOLO detects traffic signs and draws bounding boxes. The detected sign images are cropped and passed into the CNN classifier. The CNN then outputs the final predicted class. The processed images with bounding boxes and predicted labels are saved in the try_predict directory.
 
-The primary goal of this project is to provide a reliable traffic sign recognition solution for autonomous driving systems or driver assistance technologies. The model classifies traffic signs captured under different lighting, angles, and environmental conditions, enabling vehicles to accurately interpret their surroundings.
+The CNN classifier was trained on the German Traffic Sign Recognition Benchmark (GTSRB) dataset. This dataset contains 43 distinct traffic sign classes and includes thousands of real-world images from Germany with variations in lighting, angles, and weather conditions.
 
-Technical Details:
+The YOLO model was trained on a separate dataset with 21 traffic sign categories such as stop, do_not_enter, traffic_light, bus_stop, and others. This dataset was used specifically for detection.
 
-The following technologies and methods were used in the development of this project:
+Since the YOLO dataset and the GTSRB dataset are not the same, there are some limitations. Some classes overlap directly such as stop, no entry, and traffic lights. Some are similar but not identical, for example warning in YOLO compared with classes like general caution or slippery road in GTSRB. Many classes exist only in one dataset and not the other. This mismatch sometimes leads to misclassifications when the CNN receives crops of traffic signs that do not have a direct equivalent in its training set.
 
-Dataset: The German Traffic Sign Recognition Benchmark (GTSRB) dataset, which consists of thousands of images belonging to 43 distinct traffic sign classes.
+The project was implemented using PyTorch for building and training the CNN model. Ultralytics YOLOv11 was used for traffic sign detection. Pillow and OpenCV libraries were used for image processing and preprocessing. Pandas, NumPy and Matplotlib were used for data handling and visualization.
 
-Technologies Used: The PyTorch library was used for building and training the model. Pillow and OpenCV libraries were utilized for image processing and preprocessing steps.
+The custom CNN architecture consists of multiple convolutional layers with batch normalization, ReLU activations and max pooling layers. The input images were resized to 64x64 and normalized before training. The fully connected layers end with 43 outputs representing the GTSRB classes.
 
-Model Architecture:
+The CNN model was trained for 20 epochs using the Adam optimizer and CrossEntropyLoss. The training loss decreased steadily and reached a very low value of 2.73×10⁻⁶. The final accuracy on the test dataset was 96.22 percent.
 
-A custom Convolutional Neural Network (Custom CNN) architecture was designed for this project. This architecture consists of multiple sequential convolutional (Conv2d) and pooling (MaxPool2d) layers to extract meaningful features from the images.
+In the hybrid system, YOLO detects and crops traffic signs, and the CNN classifies these cropped images. Annotated results are stored in the try_predict folder. The system works well for overlapping classes but misclassifications occur due to dataset mismatches.
 
-Batch normalization (BatchNorm2d) was applied after each convolutional layer to improve model performance and accelerate training.
+There are several areas for improvement. One is to retrain YOLO and CNN on a common dataset with the same classes and labeling rules, or at least map YOLO outputs to CNN equivalents more systematically. Data augmentation such as random rotations, zooming and brightness changes could be applied to improve generalization. Dropout layers can be added to the fully connected layers to reduce overfitting. Another possible improvement is to combine YOLO predictions and CNN confidence values for better decision making. Transfer learning approaches with pre-trained models like ResNet or VGG could also be explored.
 
-Data Preprocessing: Images were resized to a standard dimension (64x64) and normalized to make them suitable for model training.
+Annotated results of the hybrid system can be found in the try_predict folder.
 
-Training and Results:
-
-The model was trained for 20 epochs using the Adam optimization algorithm and the Cross-Entropy Loss function.
-
-Training Loss: As training progressed, the loss value decreased steadily, indicating that the model was effectively learning from the data. The final loss value in the last epoch reached an extremely low level of 2.73x10⁻⁶, which demonstrates the model's excellent fit to the training data.
-
-Accuracy: The trained model achieved an impressive 96.22% accuracy on the test dataset. This result proves that the model can successfully classify new, unseen traffic signs.
-
-Areas for Improvement:
-
-While the project is a success, there are several areas that could be enhanced to further boost performance:
-
-Data Augmentation: Data augmentation techniques, such as random rotations, zooming, and brightness adjustments, could be applied to the training data to improve the model's generalization capabilities.
-
-Dropout Layers: Dropout layers could be added to the fully connected layers to prevent overfitting. This ensures more stable performance, especially when working with larger datasets.
-
-Exploring Different Architectures: Transfer learning approaches using more complex and deeper architectures (e.g., pre-trained models like ResNet or VGG) could be explored.
-
-Contact
-
-I appreciate you taking the time to review this project. I am always open to feedback and constructive criticism. Your insights would be highly valuable for further developing this work.
+Thank you for reviewing this project. I welcome feedback and suggestions, especially regarding dataset harmonization and real-time deployment on embedded systems such as Raspberry Pi.
